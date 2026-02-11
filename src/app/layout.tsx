@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     authors: [{ name: "Hashan Madushanka" }],
     creator: "Hashan Madushanka",
     publisher: "Hashan e solution",
+    applicationName: "Hashan e solution",
     formatDetection: {
         email: false,
         address: false,
@@ -67,6 +68,8 @@ export const metadata: Metadata = {
         icon: [
             { url: '/images/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
             { url: '/images/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+            { url: '/images/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+            { url: '/images/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
             { url: '/images/favicon.ico' }
         ],
         apple: [
@@ -92,12 +95,19 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const jsonLd = {
+    const websiteJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Hashan e solution",
+        "url": "https://hashanesolution.netlify.app/",
+        "alternateName": ["Hashan Electronics", "Hashan e solution Polonnaruwa"],
+    };
+
+    const businessJsonLd = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "name": "Hashan e solution",
-        "image": "https://hashanesolution.netlify.app/images/logo.png", // Replace with real URL later
-        "@id": "",
+        "image": "https://hashanesolution.netlify.app/images/logo.png",
         "url": "https://hashanesolution.netlify.app/",
         "telephone": "+94742409092",
         "address": {
@@ -108,6 +118,7 @@ export default function RootLayout({
             "postalCode": "51050",
             "addressCountry": "LK"
         },
+        "priceRange": "$$",
         "geo": {
             "@type": "GeoCoordinates",
             "latitude": 7.9250,
@@ -136,7 +147,11 @@ export default function RootLayout({
             <head>
                 <script
                     type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+                />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
                 />
             </head>
             <body className="antialiased bg-[#F3F4F6]">
