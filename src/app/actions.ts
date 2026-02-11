@@ -2,73 +2,70 @@
 
 import nodemailer from 'nodemailer';
 
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // Use SSL/TLS
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
 export async function sendEmail(formData: FormData) {
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
     const phone = formData.get('phone') as string;
     const message = formData.get('message') as string;
 
-    console.log('Attempting to send email via Nodemailer:', { name, email, phone, message });
+    // Server-side validation
+    if (!name || !email || !message) {
+        return {
+            success: false,
+            error: 'All required fields must be filled.'
+        };
+    }
 
-    // Create a transporter using environment variables for security
-    // Defaulting to Gmail settings since the recipient is a Gmail address
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER, // hashanmadushanka9122@gmail.com
-            pass: process.env.EMAIL_PASS, // App-specific password
-        },
-    });
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('Email configuration missing on server: EMAIL_USER or EMAIL_PASS not set.');
+        return {
+            success: false,
+            error: 'The server is not configured to send emails. Please contact us via WhatsApp.'
+        };
+    }
 
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: `"${name}" <${process.env.EMAIL_USER}>`,
         to: 'hashanmadushanka9122@gmail.com',
         replyTo: email,
-        subject: `New Repair Inquiry from ${name} - Hashan e solution`,
-        text: `
-      You have a new repair inquiry from your website.
-
-      Contact Details:
-      - Name: ${name}
-      - Email: ${email}
-      - Phone: ${phone || 'Not provided'}
-
-      Message:
-      ${message}
-    `,
+        subject: `New Repair Inquiry: ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`,
         html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #1E3A8A;">New Repair Inquiry</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap;">${message}</p>
-      </div>
-    `,
+            <div style="font-family: sans-serif; max-width: 600px; padding: 20px; border: 1px solid #eab308; border-radius: 12px; background: #0f172a; color: white;">
+                <h2 style="color: #eab308; margin-bottom: 20px;">New Repair Inquiry</h2>
+                <div style="margin-bottom: 10px;">
+                    <p style="margin: 5px 0;"><strong>Customer:</strong> ${name}</p>
+                    <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
+                    <p style="margin: 5px 0;"><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+                </div>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;" />
+                <div style="padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <p style="margin-top: 0;"><strong>Message:</strong></p>
+                    <p style="white-space: pre-wrap; line-height: 1.6;">${message}</p>
+                </div>
+                <p style="margin-top: 20px; font-size: 12px; color: #64748b;">Sent from Hashan e solution website</p>
+            </div>
+        `,
     };
 
     try {
-        // Note: This will fail if EMAIL_USER and EMAIL_PASS are not set.
-        // For local development without credentials, we can return success but log a warning.
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.warn('EMAIL_USER or EMAIL_PASS environment variables are missing. Email not actually sent.');
-            // Simulate success for UI purposes if desired, or return failure
-            // For now, let's return a specific message
-            return {
-                success: false,
-                error: 'Email configuration missing on server.'
-            };
-        }
-
         await transporter.sendMail(mailOptions);
         return { success: true };
-    } catch (error) {
-        console.error('Error sending email:', error);
+    } catch (error: any) {
+        console.error('Nodemailer Error:', error.message);
         return {
             success: false,
-            error: 'Failed to send message. Please try again later or contact via WhatsApp.'
+            error: 'Failed to send email. Please use WhatsApp for a faster response.'
         };
     }
 }
