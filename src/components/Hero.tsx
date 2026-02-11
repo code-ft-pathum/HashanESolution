@@ -29,8 +29,8 @@ const Hero = () => {
                         Expert Repairs in Polonnaruwa
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-bold font-poppins mb-6 leading-tight animate-fade-in-up delay-100">
-                        Your Trusted Partner for <span className="text-blue-400">Electronics</span> Repair
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold font-poppins mb-6 leading-tight animate-fade-in-up delay-100">
+                        Your Trusted Partner for <span className="text-primary">Electronics</span> Repair
                     </h1>
 
                     <p className="text-xl md:text-2xl text-gray-200 mb-10 leading-relaxed animate-fade-in-up delay-200">
@@ -62,7 +62,7 @@ const Hero = () => {
                             {[1, 2, 3, 4].map((i) => (
                                 <div key={i} className="w-12 h-12 rounded-full border-2 border-primary-dark bg-gray-300 flex items-center justify-center text-primary-dark font-bold text-xs">
                                     {/* Avatar Placeholder */}
-                                    <div className="w-full h-full rounded-full bg-blue-100 flex items-center justify-center">
+                                    <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center text-primary">
                                         User
                                     </div>
                                 </div>

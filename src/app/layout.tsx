@@ -37,20 +37,20 @@ export const metadata: Metadata = {
         address: false,
         telephone: false,
     },
-    metadataBase: new URL("https://hashan-e-solution.com"),
+    metadataBase: new URL("https://hashanesolution.netlify.app/"),
     alternates: {
         canonical: "/",
     },
     openGraph: {
         title: "Hashan e solution | Expert Electronics & TV Repair Polonnaruwa",
         description: "Professional LED/LCD TV chip-level repair, digital meter diagnostics, and electronic spare parts in Welikanda, Polonnaruwa.",
-        url: "https://hashan-e-solution.com",
+        url: "https://hashanesolution.netlify.app/",
         siteName: "Hashan e solution",
         images: [
             {
-                url: "/og-image.jpg",
+                url: "/images/logo.png",
                 width: 1200,
-                height: 630,
+                height: 1200,
                 alt: "Hashan e solution - Expert Electronics Repair",
             },
         ],
@@ -63,6 +63,17 @@ export const metadata: Metadata = {
         description: "Professional LED/LCD TV chip-level repair and electronic spare parts in Welikanda.",
         images: ["/og-image.jpg"],
     },
+    icons: {
+        icon: [
+            { url: '/images/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+            { url: '/images/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+            { url: '/images/favicon.ico' }
+        ],
+        apple: [
+            { url: '/images/apple-touch-icon.png' }
+        ],
+    },
+    manifest: '/images/site.webmanifest',
     robots: {
         index: true,
         follow: true,
@@ -85,9 +96,9 @@ export default function RootLayout({
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "name": "Hashan e solution",
-        "image": "https://hashan-e-solution.com/logo.png", // Replace with real URL later
+        "image": "https://hashanesolution.netlify.app/images/logo.png", // Replace with real URL later
         "@id": "",
-        "url": "https://hashan-e-solution.com",
+        "url": "https://hashanesolution.netlify.app/",
         "telephone": "+94742409092",
         "address": {
             "@type": "PostalAddress",

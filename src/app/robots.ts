@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: '/private/',
         },
-        sitemap: 'https://hashan-e-solution.com/sitemap.xml',
+        sitemap: 'https://hashanesolution.netlify.app/sitemap.xml',
     };
 }
