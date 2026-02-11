@@ -59,14 +59,19 @@ const Hero = () => {
 
                     <div className="mt-12 flex items-center gap-8 animate-fade-in-up delay-400">
                         <div className="flex -space-x-4">
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="w-12 h-12 rounded-full border-2 border-primary-dark bg-gray-300 flex items-center justify-center text-primary-dark font-bold text-xs">
-                                    {/* Avatar Placeholder */}
-                                    <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                        User
-                                    </div>
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="w-12 h-12 rounded-full border-2 border-primary-dark overflow-hidden relative">
+                                    <Image
+                                        src={`/images/avatar${i}.jpg`}
+                                        alt={`Happy Customer ${i}`}
+                                        fill
+                                        className="object-cover"
+                                    />
                                 </div>
                             ))}
+                            <div className="w-12 h-12 rounded-full border-2 border-primary-dark bg-primary flex items-center justify-center text-primary-dark font-black text-xs relative z-10">
+                                +500
+                            </div>
                         </div>
                         <div className="text-sm">
                             <p className="font-bold">500+ Happy Customers</p>

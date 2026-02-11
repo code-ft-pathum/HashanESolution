@@ -18,7 +18,7 @@ const products = [
     {
         name: "LCD Panel COF",
         description: "Essential components for professional panel bonding.",
-        image: "https://images.unsplash.com/photo-1591405351990-4726e33df484?auto=format&fit=crop&q=80&w=800",
+        image: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?auto=format&fit=crop&q=80&w=800",
     },
     {
         name: "Universal Mainboard",

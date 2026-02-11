@@ -38,6 +38,9 @@ const Footer = () => {
                             <li><Link href="/#services" className="hover:text-white transition-colors">Services</Link></li>
                             <li><Link href="/#products" className="hover:text-white transition-colors">Spare Parts</Link></li>
                             <li><Link href="/#contact" className="hover:text-white transition-colors">Contact</Link></li>
+                            <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+                            <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                            <li><Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
                         </ul>
                     </div>
 
@@ -71,8 +74,9 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="pt-8 border-t border-white/5 text-center text-gray-500 text-sm">
-                    <p>© {new Date().getFullYear()} Hashan e solution. All rights reserved. Developed to thrive in Welikanda.</p>
+                <div className="pt-8 border-t border-white/5 text-center text-gray-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p>© {new Date().getFullYear()} Hashan e solution. All rights reserved.</p>
+                    <p>Developed by <a href="https://gappathum-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold transition-all">GAP-Pathum</a></p>
                 </div>
             </div>
         </footer>
