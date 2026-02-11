@@ -6,30 +6,30 @@ const services = [
         title: "LED/LCD TV Repair",
         description: "Expert chip-level and panel repair for all major TV brands. We fix display issues, power failures, and mainboard faults with precision.",
         icon: Tv,
-        color: "bg-blue-500",
+        color: "bg-primary text-primary-dark",
     },
     {
         title: "Digital Meter Repair",
         description: "Advanced diagnostics and repair for digital clusters and meters. Reliable solutions for vehicle electronics and industrial displays.",
         icon: Gauge,
-        color: "bg-indigo-500",
+        color: "bg-primary text-primary-dark",
     },
     {
         title: "General Electronics",
         description: "Comprehensive repair services for all electronic items and supply of high-quality genuine spare parts for various devices.",
         icon: CircuitBoard,
-        color: "bg-blue-600",
+        color: "bg-primary text-primary-dark",
     }
 ];
 
 const Services = () => {
     return (
-        <section id="services" className="py-24 bg-white">
+        <section id="services" className="py-24 bg-primary-dark">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-blue-600 font-bold tracking-wider uppercase text-sm mb-4">Our Expertise</h2>
-                    <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-poppins">Premium Repair Services</h3>
-                    <p className="max-w-2xl mx-auto text-gray-600 text-lg">
+                    <h2 className="text-primary font-bold tracking-wider uppercase text-sm mb-4">Our Expertise</h2>
+                    <h3 className="text-4xl md:text-5xl font-bold text-white mb-6 font-poppins">Premium Repair Services</h3>
+                    <p className="max-w-2xl mx-auto text-gray-400 text-lg">
                         We provide professional chip-level electronics repair services using state-of-the-art diagnostic equipment.
                     </p>
                 </div>
@@ -38,16 +38,16 @@ const Services = () => {
                     {services.map((service, index) => (
                         <div
                             key={index}
-                            className="group relative p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+                            className="group relative p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 overflow-hidden"
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-16 -mt-16 transition-all group-hover:scale-110" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-16 -mt-16 transition-all group-hover:scale-110" />
 
-                            <div className={`${service.color} w-16 h-16 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg transition-transform group-hover:rotate-12`}>
+                            <div className={`${service.color} w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-lg transition-transform group-hover:rotate-12`}>
                                 <service.icon size={32} />
                             </div>
 
-                            <h4 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h4>
-                            <p className="text-gray-600 mb-8 leading-relaxed">
+                            <h4 className="text-2xl font-bold text-white mb-4">{service.title}</h4>
+                            <p className="text-gray-400 mb-8 leading-relaxed">
                                 {service.description}
                             </p>
 

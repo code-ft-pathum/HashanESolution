@@ -20,9 +20,10 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Home', href: '/' },
-        { name: 'Services', href: '#services' },
-        { name: 'Spare Parts', href: '#products' },
-        { name: 'Contact', href: '#contact' },
+        { name: 'Our Work', href: '/work' },
+        { name: 'Services', href: '/#services' },
+        { name: 'Spare Parts', href: '/#products' },
+        { name: 'Contact', href: '/#contact' },
     ];
 
     return (
@@ -34,18 +35,18 @@ const Navbar = () => {
                 <div className="flex justify-between items-center h-16">
                     <div className="flex-shrink-0 flex items-center gap-2">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-primary flex items-center justify-center transition-transform group-hover:scale-110">
+                            <div className="relative w-12 h-12 overflow-hidden rounded-lg bg-white/10 flex items-center justify-center transition-transform group-hover:scale-110">
                                 <Image
-                                    src="/logo.svg"
+                                    src="/images/logo.png"
                                     alt="Hashan e solution"
-                                    width={40}
-                                    height={40}
-                                    className="object-contain"
+                                    width={48}
+                                    height={48}
+                                    className="object-cover"
                                 />
                             </div>
                             <span className={cn(
                                 "text-xl font-bold tracking-tight transition-colors",
-                                scrolled ? "text-primary-dark" : "text-primary-dark"
+                                scrolled ? "text-white" : "text-white"
                             )}>
                                 Hashan <span className="text-primary">e solution</span>
                             </span>
@@ -58,14 +59,14 @@ const Navbar = () => {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-gray-700 hover:text-primary font-medium transition-colors"
+                                className="text-gray-300 hover:text-primary font-medium transition-colors"
                             >
                                 {link.name}
                             </Link>
                         ))}
                         <a
                             href="tel:0742409092"
-                            className="flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-full font-semibold hover:bg-primary-dark transition-all transform hover:scale-105 shadow-lg shadow-blue-500/20"
+                            className="flex items-center gap-2 bg-primary text-primary-dark px-6 py-2.5 rounded-full font-bold hover:bg-white transition-all transform hover:scale-105 shadow-lg shadow-primary/20"
                         >
                             <Phone size={18} />
                             <span>Call Now</span>
@@ -95,14 +96,14 @@ const Navbar = () => {
                             key={link.name}
                             href={link.href}
                             onClick={() => setIsOpen(false)}
-                            className="block px-3 py-4 text-base font-medium text-gray-700 hover:text-primary hover:bg-blue-50/50 rounded-lg transition-all"
+                            className="block px-3 py-4 text-base font-medium text-gray-300 hover:text-primary hover:bg-white/5 rounded-lg transition-all"
                         >
                             {link.name}
                         </Link>
                     ))}
                     <a
                         href="tel:0742409092"
-                        className="flex items-center justify-center gap-2 bg-primary text-white px-3 py-4 rounded-lg font-bold mt-4"
+                        className="flex items-center justify-center gap-2 bg-primary text-primary-dark px-3 py-4 rounded-lg font-bold mt-4"
                     >
                         <Phone size={20} />
                         <span>Call Now: 074 240 9092</span>

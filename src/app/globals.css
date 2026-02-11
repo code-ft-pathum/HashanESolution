@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #2563EB;
-    --color-primary-dark: #1E3A8A;
+    --color-primary: #EAB308;
+    --color-primary-dark: #0F172A;
     --color-whatsapp: #25D366;
-    --color-background: #F3F4F6;
-    --color-surface: #FFFFFF;
+    --color-background: #0F172A;
+    --color-surface: #1E293B;
 
     --font-sans: "Inter", "Poppins", system-ui, sans-serif;
 }
@@ -32,22 +32,22 @@ body {
 
 @layer base {
     * {
-        @apply border-gray-200;
+        @apply border-white/10;
     }
 
     body {
-        @apply bg-[#F3F4F6] text-[#171717];
+        @apply bg-primary-dark text-white;
     }
 }
 
 .glass-morphism {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .text-gradient {
-    background: linear-gradient(to right, #2563EB, #1E3A8A);
+    background: linear-gradient(to right, #EAB308, #FDE047);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

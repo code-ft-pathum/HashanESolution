@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
     return [
         {
-            url: 'https://hashan-e-solution.com',
+            url: 'https://hashanesolution.netlify.app/',
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 1,
