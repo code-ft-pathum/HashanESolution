@@ -11,10 +11,10 @@ const Footer = () => {
                     <div className="md:col-span-1">
                         <Link href="/" className="flex items-center gap-2 mb-6 group">
                             <div className="w-12 h-12 overflow-hidden rounded-lg bg-white/10 flex items-center justify-center">
-                                <Image src="/images/logo.png" alt="Hashan e solution" width={48} height={48} className="object-cover" />
+                                <Image src="/images/logo.png" alt="Hashan E Solution" width={48} height={48} className="object-cover" />
                             </div>
                             <span className="text-xl font-bold tracking-tight">
-                                Hashan <span className="text-primary">e solution</span>
+                                Hashan <span className="text-primary">E Solution</span>
                             </span>
                         </Link>
                         <p className="text-gray-400 leading-relaxed mb-6">
@@ -75,7 +75,7 @@ const Footer = () => {
                 </div>
 
                 <div className="pt-8 border-t border-white/5 text-center text-gray-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p>© {new Date().getFullYear()} Hashan e solution. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Hashan E Solution. All rights reserved.</p>
                     <p>Developed by <a href="https://gappathum-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-bold transition-all">GAP-Pathum</a></p>
                 </div>
             </div>

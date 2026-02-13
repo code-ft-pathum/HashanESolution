@@ -53,7 +53,7 @@ export async function sendEmail(formData: FormData) {
                     <p style="margin-top: 0;"><strong>Message:</strong></p>
                     <p style="white-space: pre-wrap; line-height: 1.6;">${message}</p>
                 </div>
-                <p style="margin-top: 20px; font-size: 12px; color: #64748b;">Sent from Hashan e solution website</p>
+                <p style="margin-top: 20px; font-size: 12px; color: #64748b;">Sent from Hashan E Solution website</p>
             </div>
         `,
     };

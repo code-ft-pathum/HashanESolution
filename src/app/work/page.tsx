@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     keywords: [
         "TV repair videos Sri Lanka",
         "Digital meter repair gallery",
-        "Hashan e solution projects",
+        "Hashan E Solution projects",
         "Electronics repair showcase Polonnaruwa",
         "LED TV panel repair demonstration",
         "Welikanda electronics workshop"

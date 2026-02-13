@@ -38,7 +38,7 @@ const Navbar = () => {
                             <div className="relative w-12 h-12 overflow-hidden rounded-lg bg-white/10 flex items-center justify-center transition-transform group-hover:scale-110">
                                 <Image
                                     src="/images/logo.png"
-                                    alt="Hashan e solution"
+                                    alt="Hashan E Solution"
                                     width={48}
                                     height={48}
                                     className="object-cover"
@@ -48,7 +48,7 @@ const Navbar = () => {
                                 "text-xl font-bold tracking-tight transition-colors",
                                 scrolled ? "text-white" : "text-white"
                             )}>
-                                Hashan <span className="text-primary">e solution</span>
+                                Hashan <span className="text-primary">E Solution</span>
                             </span>
                         </Link>
                     </div>

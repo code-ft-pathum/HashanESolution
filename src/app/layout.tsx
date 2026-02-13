@@ -14,25 +14,22 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
     title: {
-        default: "Hashan e solution | Expert Electronics & TV Repair Polonnaruwa",
-        template: "%s | Hashan e solution"
+        default: "Hashan E Solution | Expert LED/LCD TV & Digital Meter Repair Polonnaruwa",
+        template: "%s | Hashan E Solution"
     },
-    description: "Professional LED/LCD TV chip-level repair, digital meter diagnostics, and electronic spare parts in Welikanda, Polonnaruwa. Fast, reliable service with 500+ happy customers.",
+    description: "Professional chip-level repair for LED/LCD TVs (Samsung, LG, Sony, TCL), Digital Meters (Pulsar, Apache, Yamaha), and household electronics (Ovens, Blenders, Fridges) in Welikanda, Polonnaruwa.",
     keywords: [
-        "TV repair Polonnaruwa",
-        "LED TV repair Sri Lanka",
-        "Hashan e solution",
-        "Electronics repair Welikanda",
-        "Digital meter repair Sri Lanka",
-        "LCD panel repair Polonnaruwa",
-        "Electronic spare parts Sri Lanka",
-        "TV chip level repair",
-        "Polonnaruwa electronics shop"
+        "TV repair Polonnaruwa", "LED TV repair Sri Lanka", "Hashan E Solution",
+        "Samsung TV repair Polonnaruwa", "LG TV repair Sri Lanka", "Sony TV repair Welikanda", "TCL TV repair", "Singer TV repair", "Abans TV repair",
+        "Pulsar 150 digital meter repair", "Pulsar 180 digital meter repair", "Pulsar 220 meter repair", "NS200 meter fix", "Apache digital meter repair", "Yamaha FZ meter repair",
+        "Digital meter repair Sri Lanka", "Motorcycle meter repair Polonnaruwa",
+        "Blender repair Welikanda", "Rice cooker repair", "Microwave oven repair", "Refrigerator repair Polonnaruwa", "Iron repair",
+        "Electronics repair Welikanda", "LCD panel repair Polonnaruwa", "TV chip level repair"
     ],
     authors: [{ name: "Hashan Madushanka" }],
     creator: "Hashan Madushanka",
-    publisher: "Hashan e solution",
-    applicationName: "Hashan e solution",
+    publisher: "Hashan E Solution",
+    applicationName: "Hashan E Solution",
     formatDetection: {
         email: false,
         address: false,
@@ -43,16 +40,16 @@ export const metadata: Metadata = {
         canonical: "/",
     },
     openGraph: {
-        title: "Hashan e solution | Expert Electronics & TV Repair Polonnaruwa",
-        description: "Professional LED/LCD TV chip-level repair, digital meter diagnostics, and electronic spare parts in Welikanda, Polonnaruwa.",
+        title: "Hashan E Solution | Expert Electronics & TV Repair Polonnaruwa",
+        description: "Professional repair for Samsung, LG, Sony TVs and Pulsar, Apache bike digital meters in Polonnaruwa.",
         url: "https://hashanesolution.netlify.app/",
-        siteName: "Hashan e solution",
+        siteName: "Hashan E Solution",
         images: [
             {
                 url: "/images/logo.png",
                 width: 1200,
                 height: 1200,
-                alt: "Hashan e solution - Expert Electronics Repair",
+                alt: "Hashan E Solution - Expert Electronics Repair in Polonnaruwa",
             },
         ],
         locale: "en_LK",
@@ -60,9 +57,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Hashan e solution | Expert Electronics & TV Repair Polonnaruwa",
-        description: "Professional LED/LCD TV chip-level repair and electronic spare parts in Welikanda.",
-        images: ["/og-image.jpg"],
+        title: "Hashan E Solution | TV & Digital Meter Repair Polonnaruwa",
+        description: "Expert chip-level repair for TVs, bike digital meters, and household appliances.",
+        images: ["/images/logo.png"],
     },
     icons: {
         icon: [
@@ -98,15 +95,15 @@ export default function RootLayout({
     const websiteJsonLd = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "Hashan e solution",
+        "name": "Hashan E Solution",
         "url": "https://hashanesolution.netlify.app/",
-        "alternateName": ["Hashan Electronics", "Hashan e solution Polonnaruwa"],
+        "alternateName": ["Hashan Electronics", "Hashan E Solution Polonnaruwa", "Hashan TV Repair"],
     };
 
     const businessJsonLd = {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        "name": "Hashan e solution",
+        "name": "Hashan E Solution",
         "image": "https://hashanesolution.netlify.app/images/logo.png",
         "url": "https://hashanesolution.netlify.app/",
         "telephone": "+94742409092",
@@ -127,15 +124,40 @@ export default function RootLayout({
         "openingHoursSpecification": {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": [
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday"
+                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
             ],
             "opens": "09:00",
             "closes": "18:00"
+        },
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Repair Services",
+            "itemListElement": [
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "LED/LCD TV Repair",
+                        "description": "Chip-level repair for Samsung, LG, Sony, TCL, Panasonic TVs."
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Bike Digital Meter Repair",
+                        "description": "Restoration of Pulsar 150/180/220, Apache, and Yamaha digital clusters."
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Household Appliance Repair",
+                        "description": "Fixing Blenders, Rice Cookers, Microwave Ovens, and Refrigerators."
+                    }
+                }
+            ]
         },
         "sameAs": [
             "https://web.facebook.com/profile.php?id=61587911941346"

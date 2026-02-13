@@ -7,19 +7,23 @@ import { cn } from '@/lib/utils';
 const faqs = [
     {
         question: "What items do you repair?",
-        answer: "We repair almost all household and professional electronic items, including LED/LCD TVs, Digital Meters (Bikes/Cars), Rice Cookers, Blenders, Microwave Ovens, Induction Cookers, Electric Irons, and even Refrigerators. If it has a circuit board, we can likely fix it!"
+        answer: "We repair almost all household and professional electronic items, including LED/LCD TVs, Digital Meters (Bikes/Cars), Rice Cookers, Blenders, Microwave Ovens, Induction Cookers, Electric Irons, and Refrigerators. If it has a circuit board, we can likely fix it!"
+    },
+    {
+        question: "Which bike digital meters do you fix?",
+        answer: "We specialize in digital cluster repairs for Bajaj Pulsar (150, 180, 220, NS), TVS Apache, Hero, and Yamaha FZ. Common fixes include display fading, backlight issues, and circuit board failures."
+    },
+    {
+        question: "Do you repair Refrigerators and Ovens?",
+        answer: "Yes, we specialized in repairing the electronic control boards (PCBs) of modern Refrigerators and Microwave Ovens. We can often fix the existing board at a fraction of the cost of a full replacement."
     },
     {
         question: "How long does a typical repair take?",
-        answer: "Most minor repairs (Rice cookers, Blenders) are completed within 24-48 hours. More complex repairs like TV panel bonding or chip-level motherboard work may take 3-5 working days depending on the availability of genuine spare parts."
+        answer: "Most minor repairs (Rice cookers, Blenders) are completed within 24-48 hours. More complex repairs like TV panel bonding or chip-level work take 3-5 working days depending on part availability."
     },
     {
-        question: "Do you provide a warranty for repairs?",
-        answer: "Yes! We provide a warranty on all our service repairs and the genuine spare parts we supply. The duration varies from 1 month to 6 months depending on the type of repair and part replaced."
-    },
-    {
-        question: "Do you offer on-site or home service?",
-        answer: "We offer on-site inspections for large items like Refrigerators and certain TV repairs within the Polonnaruwa district. For smaller appliances, we recommend bringing them to our workshop for a detailed diagnostic."
+        question: "Do you offer on-site service?",
+        answer: "We offer on-site inspections for large items like Refrigerators and certain TV repairs within the Polonnaruwa district (Welikanda, Manampitiya, etc.). Smaller items should be brought to our workshop."
     }
 ];
 

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: "Terms of Service",
-    description: "Read the Terms of Service for Hashan e solution for information on our repair service agreements and website usage.",
+    description: "Read the Terms of Service for Hashan E Solution for information on our repair service agreements and website usage.",
     robots: { index: false, follow: true }
 };
 
@@ -31,7 +31,7 @@ const TermsOfService = () => {
 
                 <section className="mb-10">
                     <h2 className="text-2xl font-bold text-primary mb-4">4. Limitation of Liability</h2>
-                    <p>In no event shall Hashan e solution be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.</p>
+                    <p>In no event shall Hashan E Solution be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.</p>
                 </section>
 
                 <section className="mb-10">

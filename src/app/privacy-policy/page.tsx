@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: "Privacy Policy",
-    description: "Read the Privacy Policy of Hashan e solution. We are committed to protecting your privacy and personal information.",
+    description: "Read the Privacy Policy of Hashan E Solution. We are committed to protecting your privacy and personal information.",
     robots: { index: false, follow: true } // Usually legal pages don't need high search priority
 };
 
@@ -16,7 +16,7 @@ const PrivacyPolicy = () => {
 
                 <section className="mb-10">
                     <h2 className="text-2xl font-bold text-primary mb-4">1. Introduction</h2>
-                    <p>Welcome to Hashan e solution. We respect your privacy and want to protect your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.</p>
+                    <p>Welcome to Hashan E Solution. We respect your privacy and want to protect your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.</p>
                 </section>
 
                 <section className="mb-10">

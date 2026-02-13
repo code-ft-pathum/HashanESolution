@@ -6,23 +6,23 @@ import { MessageCircle } from 'lucide-react';
 
 const products = [
     {
-        name: "TV Power IC",
-        description: "High-quality genuine power ICs for multiple TV brands.",
+        name: "TV Power & Logic ICs",
+        description: "Genuine power and logic ICs for Samsung, LG, Sony, and China universal boards.",
         image: "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&q=80&w=800",
     },
     {
-        name: "Digital Meter Display",
-        description: "Replacement displays for various digital vehicle meters.",
+        name: "Cycle Meter LCDs",
+        description: "High-contrast LCD replacement units for Pulsar, Apache, and FZ digital meters.",
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
     },
     {
-        name: "LCD Panel COF",
-        description: "Essential components for professional panel bonding.",
+        name: "LCD/LED Panel COFs",
+        description: "Professional grade COF chips for Sony and Samsung panel bonding repairs.",
         image: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?auto=format&fit=crop&q=80&w=800",
     },
     {
-        name: "Universal Mainboard",
-        description: "Versatile mainboards for LED/LCD TV conversions.",
+        name: "Smart TV Mainboards",
+        description: "Ready-to-install Android and Smart TV mainboards for various LED TV models.",
         image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
     }
 ];
