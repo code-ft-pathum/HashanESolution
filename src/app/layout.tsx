@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -87,83 +88,84 @@ export const metadata: Metadata = {
     },
 };
 
+
+const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Hashan E Solution",
+    "url": "https://hashanesolution.netlify.app/",
+    "alternateName": ["Hashan Electronics", "Hashan E Solution Polonnaruwa", "Hashan TV Repair"],
+};
+
+const businessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Hashan E Solution",
+    "image": "https://hashanesolution.netlify.app/images/logo.png",
+    "url": "https://hashanesolution.netlify.app/",
+    "telephone": "+94742409092",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "No 09, New Town",
+        "addressLocality": "Welikanda",
+        "addressRegion": "Polonnaruwa",
+        "postalCode": "51050",
+        "addressCountry": "LK"
+    },
+    "priceRange": "$$",
+    "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 7.9250,
+        "longitude": 81.1092
+    },
+    "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+        ],
+        "opens": "09:00",
+        "closes": "18:00"
+    },
+    "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Repair Services",
+        "itemListElement": [
+            {
+                "@type": "Offer",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "LED/LCD TV Repair",
+                    "description": "Chip-level repair for Samsung, LG, Sony, TCL, Panasonic TVs."
+                }
+            },
+            {
+                "@type": "Offer",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Bike Digital Meter Repair",
+                    "description": "Restoration of Pulsar 150/180/220, Apache, and Yamaha digital clusters."
+                }
+            },
+            {
+                "@type": "Offer",
+                "itemOffered": {
+                    "@type": "Service",
+                    "name": "Household Appliance Repair",
+                    "description": "Fixing Blenders, Rice Cookers, Microwave Ovens, and Refrigerators."
+                }
+            }
+        ]
+    },
+    "sameAs": [
+        "https://web.facebook.com/profile.php?id=61587911941346"
+    ]
+};
+
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const websiteJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Hashan E Solution",
-        "url": "https://hashanesolution.netlify.app/",
-        "alternateName": ["Hashan Electronics", "Hashan E Solution Polonnaruwa", "Hashan TV Repair"],
-    };
-
-    const businessJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "Hashan E Solution",
-        "image": "https://hashanesolution.netlify.app/images/logo.png",
-        "url": "https://hashanesolution.netlify.app/",
-        "telephone": "+94742409092",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "No 09, New Town",
-            "addressLocality": "Welikanda",
-            "addressRegion": "Polonnaruwa",
-            "postalCode": "51050",
-            "addressCountry": "LK"
-        },
-        "priceRange": "$$",
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 7.9250,
-            "longitude": 81.1092
-        },
-        "openingHoursSpecification": {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": [
-                "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-            ],
-            "opens": "09:00",
-            "closes": "18:00"
-        },
-        "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Repair Services",
-            "itemListElement": [
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "LED/LCD TV Repair",
-                        "description": "Chip-level repair for Samsung, LG, Sony, TCL, Panasonic TVs."
-                    }
-                },
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "Bike Digital Meter Repair",
-                        "description": "Restoration of Pulsar 150/180/220, Apache, and Yamaha digital clusters."
-                    }
-                },
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "Household Appliance Repair",
-                        "description": "Fixing Blenders, Rice Cookers, Microwave Ovens, and Refrigerators."
-                    }
-                }
-            ]
-        },
-        "sameAs": [
-            "https://web.facebook.com/profile.php?id=61587911941346"
-        ]
-    };
-
     return (
         <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
             <head>
@@ -177,6 +179,7 @@ export default function RootLayout({
                 />
             </head>
             <body className="antialiased bg-[#F3F4F6]">
+                <Toaster position="top-right" richColors />
                 <Navbar />
                 <main className="min-h-screen">
                     {children}

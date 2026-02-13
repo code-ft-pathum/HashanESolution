@@ -12,13 +12,24 @@ const Hero = () => {
         <section className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
             {/* Background with Overlay */}
             <div className="absolute inset-0 z-0">
-                <Image
-                    src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=2070"
-                    alt="Electronics repair background"
-                    fill
-                    priority
-                    className="object-cover transition-transform duration-1000 scale-105"
-                />
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 scale-105"
+                    poster="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=2070"
+                >
+                    <source src="https://www.pexels.com/download/video/7030718/" type="video/mp4" />
+                    {/* Fallback Image if video fails to load or isn't supported */}
+                    <Image
+                        src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=2070"
+                        alt="Electronics repair background"
+                        fill
+                        priority
+                        className="object-cover transition-transform duration-1000 scale-105"
+                    />
+                </video>
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/90 via-primary-dark/70 to-transparent z-10" />
             </div>
 

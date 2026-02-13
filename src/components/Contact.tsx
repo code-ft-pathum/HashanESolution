@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Send, Phone, Mail, MapPin, Facebook, MessageCircle } from 'lucide-react';
 import { sendEmail } from '@/app/actions';
 
+import { toast } from 'sonner';
+
 const Contact = () => {
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -14,14 +16,26 @@ const Contact = () => {
         setErrorMessage(null);
 
         const formData = new FormData(e.currentTarget);
-        const result = await sendEmail(formData);
 
-        if (result.success) {
-            setStatus('success');
-            (e.target as HTMLFormElement).reset();
-        } else {
+        try {
+            const result = await sendEmail(formData);
+
+            if (result.success) {
+                setStatus('success');
+                toast.success('Message sent successfully! We will get back to you soon.');
+                (e.target as HTMLFormElement).reset();
+
+                // Reset status back to idle after a few seconds
+                setTimeout(() => setStatus('idle'), 5000);
+            } else {
+                setStatus('error');
+                setErrorMessage(result.error || 'Something went wrong');
+                toast.error(result.error || 'Failed to send message. Please try again or use WhatsApp.');
+            }
+        } catch (error) {
             setStatus('error');
-            setErrorMessage(result.error || 'Something went wrong');
+            setErrorMessage('An unexpected error occurred.');
+            toast.error('An unexpected error occurred. Please try again.');
         }
     };
 
