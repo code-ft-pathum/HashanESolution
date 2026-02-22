@@ -20,14 +20,20 @@ export default function LoginPage() {
     }, [user, router]);
 
     const handleGoogleLogin = async () => {
+        // Start the promise immediately before ANY state updates
+        // This is crucial for Safari and mobile browsers to not block the popup
+        const loginPromise = signInWithGoogle();
         setIsLoading(true);
+
         try {
-            await signInWithGoogle();
-            router.push('/dashboard');
+            await loginPromise;
+            // router.push is handled by the useEffect watching 'user'
         } catch (error: any) {
             console.error("Login failed:", error);
-            // Let's show the exact Firebase error so we know what is failing
-            toast.error(error?.message || "Login failed. Ensure your Firebase Auth setup is correct.");
+            // Ignore popup-closed-by-user errors
+            if (error.code !== 'auth/popup-closed-by-user') {
+                toast.error(error?.message || "Login failed. Ensure your Firebase Auth setup is correct.");
+            }
         } finally {
             setIsLoading(false);
         }
