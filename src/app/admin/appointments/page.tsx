@@ -8,8 +8,10 @@ import Image from 'next/image';
 import {
     Calendar, Clock, Wrench, Users, Search, Filter, Trash2,
     CheckCircle, AlertCircle, XCircle, MessageSquare, Phone,
-    Mail, ChevronDown, ChevronUp, DollarSign, Save
+    Mail, ChevronDown, ChevronUp, DollarSign, Save, FileText, Share2
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface Appointment {
     id: string;
@@ -115,6 +117,112 @@ export default function AdminAppointments() {
         const matchesStatus = statusFilter === 'all' || apt.status === statusFilter;
         return matchesSearch && matchesStatus;
     });
+
+    const generatePDF = (apt: Appointment) => {
+        const doc = new jsPDF();
+
+        // Add Header
+        doc.setFontSize(22);
+        doc.setTextColor(234, 179, 8); // Primary yellow color
+        doc.text("Hashan E Solution", 105, 20, { align: "center" });
+
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Professional Electronics Repair Services", 105, 28, { align: "center" });
+        doc.text("Welikanda, Polonnaruwa", 105, 33, { align: "center" });
+        doc.text("Tel: 07X XXX XXXX", 105, 38, { align: "center" });
+
+        // Divider
+        doc.setDrawColor(200, 200, 200);
+        doc.line(14, 45, 196, 45);
+
+        // Receipt Details
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Service Receipt", 14, 58);
+
+        doc.setFontSize(11);
+        doc.text(`Receipt No: #APT-${apt.id.slice(0, 8).toUpperCase()}`, 14, 68);
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 75);
+        doc.text(`Status: ${apt.status.toUpperCase()}`, 14, 82);
+
+        // Customer Details Table
+        autoTable(doc, {
+            startY: 90,
+            head: [['Customer Details', '']],
+            body: [
+                ['Name', apt.userName],
+                ['Email', apt.userEmail],
+                ['Phone', apt.phone],
+            ],
+            theme: 'plain',
+            headStyles: { fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' },
+            styles: { fontSize: 11, cellPadding: 3 },
+            columnStyles: { 0: { fontStyle: 'bold', cellWidth: 40 } }
+        });
+
+        // Service Details Table
+        autoTable(doc, {
+            startY: (doc as any).lastAutoTable.finalY + 10,
+            head: [['Item / Service Details', 'Description']],
+            body: [
+                ['Category', apt.itemCategory],
+                ['Item', apt.electricItem],
+                ['Issue Reported', apt.issue],
+                ['Admin Notes', apt.adminNotes || 'N/A']
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [234, 179, 8], textColor: 0, fontStyle: 'bold' },
+            styles: { fontSize: 11, cellPadding: 5 }
+        });
+
+        // Pricing Section
+        const finalY = (doc as any).lastAutoTable.finalY + 15;
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        if (apt.estimatedCost) {
+            doc.text(`Estimated Cost: Rs. ${apt.estimatedCost.toLocaleString()}`, 196, finalY, { align: 'right' });
+        } else {
+            doc.text(`Estimated Cost: Pending Inspection`, 196, finalY, { align: 'right' });
+        }
+
+        // Footer
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(150, 150, 150);
+        doc.text("Thank you for choosing Hashan E Solution!", 105, 270, { align: "center" });
+        doc.text("This is a computer generated document.", 105, 277, { align: "center" });
+
+        // Download
+        doc.save(`Receipt_${apt.userName.replace(/\s+/g, '_')}_${apt.id.slice(0, 5)}.pdf`);
+    };
+
+    const shareViaWhatsApp = (apt: Appointment) => {
+        let phoneText = apt.phone.replace(/[^0-9]/g, '');
+        // If local format e.g 071, replace leading zero with 94
+        if (phoneText.startsWith('0')) {
+            phoneText = '94' + phoneText.substring(1);
+        }
+
+        let message = `*Hashan E Solution - Service Receipt*\n\n`;
+        message += `Hello ${apt.userName},\n`;
+        message += `Here is the status of your reported issue with your ${apt.electricItem}.\n\n`;
+        message += `*ID:* #APT-${apt.id.slice(0, 8).toUpperCase()}\n`;
+        message += `*Item:* ${apt.electricItem} (${apt.itemCategory})\n`;
+        message += `*Issue:* ${apt.issue}\n`;
+        message += `*Status:* ${apt.status.toUpperCase()}\n`;
+        if (apt.adminNotes) {
+            message += `*Notes:* ${apt.adminNotes}\n`;
+        }
+        if (apt.estimatedCost) {
+            message += `\n*Estimated Cost:* Rs. ${apt.estimatedCost.toLocaleString()}\n`;
+        }
+        message += `\nThank you for choosing Hashan E Solution!`;
+
+        const whatsappUrl = `https://wa.me/${phoneText}?text=${encodeURIComponent(message)}`;
+        // Open WhatsApp Web or App
+        window.open(whatsappUrl, '_blank');
+    };
 
     return (
         <div className="space-y-6">
@@ -323,13 +431,31 @@ export default function AdminAppointments() {
                                                             className="flex-1 flex items-center justify-center gap-1 bg-primary/10 text-primary border border-primary/20 px-3 py-2 rounded-lg text-sm font-medium hover:bg-primary/20 transition-all"
                                                         >
                                                             <Save size={14} />
-                                                            Save
+                                                            Save Notes
                                                         </button>
                                                         <button
                                                             onClick={() => handleDelete(apt.id)}
                                                             className="flex items-center justify-center gap-1 bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-500/20 transition-all"
+                                                            title="Delete Appointment"
                                                         >
                                                             <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="pt-2 border-t border-white/5 flex gap-2">
+                                                        <button
+                                                            onClick={() => generatePDF(apt)}
+                                                            className="flex-1 flex items-center justify-center gap-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-500/20 transition-all"
+                                                        >
+                                                            <FileText size={16} />
+                                                            Download PDF
+                                                        </button>
+                                                        <button
+                                                            onClick={() => shareViaWhatsApp(apt)}
+                                                            className="flex-1 flex items-center justify-center gap-2 bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-green-500/20 transition-all"
+                                                        >
+                                                            <Share2 size={16} />
+                                                            WhatsApp
                                                         </button>
                                                     </div>
                                                 </div>
