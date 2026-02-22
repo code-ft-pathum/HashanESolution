@@ -125,7 +125,7 @@ export default function FinancesPage() {
                 </div>
                 <button
                     onClick={() => setShowAddForm(!showAddForm)}
-                    className="inline-flex items-center gap-2 bg-primary text-primary-dark px-5 py-3 rounded-xl font-bold hover:bg-white transition-all text-sm"
+                    className="flex sm:inline-flex items-center justify-center gap-2 bg-primary text-primary-dark px-5 py-3 rounded-xl font-bold hover:bg-white transition-all text-sm w-full sm:w-auto"
                 >
                     <Plus size={18} />
                     Add Entry
@@ -296,7 +296,7 @@ export default function FinancesPage() {
                     </div>
                     <button
                         type="submit"
-                        className={`mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${formData.type === 'income'
+                        className={`mt-6 flex sm:inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm w-full sm:w-auto transition-all ${formData.type === 'income'
                             ? 'bg-green-500 text-white hover:bg-green-400'
                             : 'bg-red-500 text-white hover:bg-red-400'
                             }`}
@@ -319,7 +319,7 @@ export default function FinancesPage() {
                         className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder-gray-500 focus:border-primary/50 focus:outline-none transition-all"
                     />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1">
                     <button
                         onClick={() => setTypeFilter('all')}
                         className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${typeFilter === 'all' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-white/5 text-gray-400 border-white/10'}`}

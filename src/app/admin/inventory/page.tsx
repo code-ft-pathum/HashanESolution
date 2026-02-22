@@ -144,7 +144,7 @@ export default function InventoryPage() {
                 </div>
                 <button
                     onClick={() => { setShowAddForm(!showAddForm); setEditingId(null); }}
-                    className="inline-flex items-center gap-2 bg-primary text-primary-dark px-5 py-3 rounded-xl font-bold hover:bg-white transition-all text-sm"
+                    className="flex sm:inline-flex items-center justify-center gap-2 bg-primary text-primary-dark px-5 py-3 rounded-xl font-bold hover:bg-white transition-all text-sm w-full sm:w-auto"
                 >
                     <Plus size={18} />
                     Add Item
@@ -259,7 +259,7 @@ export default function InventoryPage() {
                     </div>
                     <button
                         type="submit"
-                        className="mt-4 inline-flex items-center gap-2 bg-primary text-primary-dark px-6 py-2.5 rounded-xl font-bold hover:bg-white transition-all text-sm"
+                        className="mt-6 flex sm:inline-flex items-center justify-center gap-2 bg-primary text-primary-dark px-6 py-3 rounded-xl font-bold hover:bg-white transition-all text-sm w-full sm:w-auto"
                     >
                         <Save size={16} />
                         {editingId ? 'Update Item' : 'Add Item'}
