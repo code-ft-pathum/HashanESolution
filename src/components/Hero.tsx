@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MessageCircle, ArrowRight } from 'lucide-react';
+import { MessageCircle, ArrowRight, Calendar } from 'lucide-react';
 
 const Hero = () => {
     const whatsappUrl = "https://wa.me/94742409092?text=Hello%20Hashan%20e%20solution,%20I%20need%20a%20repair%20quote%20for...";
@@ -60,11 +60,12 @@ const Hero = () => {
                         </a>
 
                         <Link
-                            href="#services"
-                            className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/30 px-8 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all"
+                            href="/login"
+                            className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-yellow-400 text-primary-dark px-8 py-5 rounded-2xl font-bold text-lg hover:shadow-[0_0_30px_rgba(234,179,8,0.4)] transition-all transform hover:scale-105"
                         >
-                            Our Services
-                            <ArrowRight size={20} />
+                            <Calendar size={22} className="mr-1" />
+                            Book Appointment
+                            <ArrowRight size={22} />
                         </Link>
                     </div>
 

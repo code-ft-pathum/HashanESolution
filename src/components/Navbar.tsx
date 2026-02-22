@@ -23,6 +23,7 @@ const Navbar = () => {
         { name: 'Our Work', href: '/work' },
         { name: 'Services', href: '/#services' },
         { name: 'Spare Parts', href: '/#products' },
+        { name: 'Appointments', href: '/login' },
         { name: 'Contact', href: '/#contact' },
     ];
 
@@ -55,15 +56,28 @@ const Navbar = () => {
 
                     {/* Desktop Nav */}
                     <div className="hidden md:flex items-center space-x-8">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className="text-gray-300 hover:text-primary font-medium transition-colors"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
+                        {navLinks.map((link) => {
+                            if (link.name === 'Appointments') {
+                                return (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        className="bg-primary text-primary-dark shadow-[0_0_15px_rgba(234,179,8,0.3)] px-5 py-2.5 rounded-full font-bold hover:bg-white transition-all transform hover:scale-105"
+                                    >
+                                        Book {link.name}
+                                    </Link>
+                                );
+                            }
+                            return (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className="text-gray-300 hover:text-primary font-medium transition-colors"
+                                >
+                                    {link.name}
+                                </Link>
+                            );
+                        })}
                         <a
                             href="tel:0742409092"
                             className="flex items-center gap-2 bg-primary text-primary-dark px-6 py-2.5 rounded-full font-bold hover:bg-white transition-all transform hover:scale-105 shadow-lg shadow-primary/20"

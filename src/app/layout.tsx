@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import { Toaster } from "sonner";
+import ClientLayout from "@/components/ClientLayout";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -25,7 +23,8 @@ export const metadata: Metadata = {
         "Pulsar 150 digital meter repair", "Pulsar 180 digital meter repair", "Pulsar 220 meter repair", "NS200 meter fix", "Apache digital meter repair", "Yamaha FZ meter repair",
         "Digital meter repair Sri Lanka", "Motorcycle meter repair Polonnaruwa",
         "Blender repair Welikanda", "Rice cooker repair", "Microwave oven repair", "Refrigerator repair Polonnaruwa", "Iron repair",
-        "Electronics repair Welikanda", "LCD panel repair Polonnaruwa", "TV chip level repair"
+        "Electronics repair Welikanda", "LCD panel repair Polonnaruwa", "TV chip level repair",
+        "Book electronics repair Polonnaruwa", "Schedule TV repair online Sri Lanka", "Hashan E Solution appointment booking"
     ],
     authors: [{ name: "Hashan Madushanka" }],
     creator: "Hashan Madushanka",
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: "Hashan E Solution | Expert Electronics & TV Repair Polonnaruwa",
-        description: "Professional repair for Samsung, LG, Sony TVs and Pulsar, Apache bike digital meters in Polonnaruwa.",
+        description: "Professional repair for Samsung, LG, Sony TVs and bike digital meters in Polonnaruwa. Book your repair appointment online securely.",
         url: "https://hashanesolution.netlify.app/",
         siteName: "Hashan E Solution",
         images: [
@@ -180,12 +179,9 @@ export default function RootLayout({
             </head>
             <body className="antialiased bg-[#F3F4F6]">
                 <Toaster position="top-right" richColors />
-                <Navbar />
-                <main className="min-h-screen">
+                <ClientLayout>
                     {children}
-                </main>
-                <Footer />
-                <WhatsAppButton />
+                </ClientLayout>
             </body>
         </html>
     );
