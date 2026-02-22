@@ -14,7 +14,20 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const app = !getApps().length
+    ? initializeApp(
+        firebaseConfig.apiKey
+            ? firebaseConfig
+            : {
+                apiKey: "dummy-key-for-build",
+                authDomain: "dummy-auth-domain-for-build",
+                projectId: "dummy-project-id",
+                storageBucket: "dummy-bucket",
+                messagingSenderId: "dummy-sender-id",
+                appId: "dummy-app-id"
+            }
+    )
+    : getApps()[0];
 
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
