@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
     User,
-    signInWithPopup,
+    signInWithRedirect,
     signOut,
     onAuthStateChanged,
 } from 'firebase/auth';
@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signInWithGoogle = async () => {
         try {
-            await signInWithPopup(auth, googleProvider);
+            await signInWithRedirect(auth, googleProvider);
         } catch (error) {
             console.error("Error signing in with Google:", error);
             throw error;
