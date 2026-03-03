@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import ChatBot from '@/components/ChatBot';
 import { AuthProvider } from '@/lib/auth-context';
 
 const HIDE_SHELL_ROUTES = ['/dashboard', '/admin', '/login'];
@@ -26,6 +27,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     </main>
                     <Footer />
                     <WhatsAppButton />
+                    <ChatBot isAdmin={false} />
                 </>
             )}
         </AuthProvider>

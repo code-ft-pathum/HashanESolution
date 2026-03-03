@@ -8,6 +8,7 @@ import {
     LayoutDashboard, Calendar, Package, DollarSign, LogOut,
     Shield, ChevronLeft, ChevronRight, Menu, X
 } from 'lucide-react';
+import ChatBot from '@/components/ChatBot';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -165,6 +166,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     {children}
                 </main>
             </div>
+
+            {/* Admin AI Chat Agent */}
+            <ChatBot isAdmin={true} />
         </div>
     );
 }

@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Home, LogOut, User, Clock } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import ChatBot from '@/components/ChatBot';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user, loading, logout } = useAuth();
@@ -122,6 +123,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
                 {children}
             </main>
+
+            {/* AI Chat Assistant */}
+            <ChatBot isAdmin={false} />
         </div>
     );
 }

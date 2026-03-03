@@ -54,6 +54,27 @@ export default function AdminDashboard() {
                 const finSnap = await getDocs(finQuery);
                 const finData = finSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as FinanceEntry[];
                 setFinances(finData);
+
+                // Broadcast data to chatbot
+                const totalIncome = finData.filter(f => f.type === 'income').reduce((sum, f) => sum + f.amount, 0);
+                const totalExpense = finData.filter(f => f.type === 'expense').reduce((sum, f) => sum + f.amount, 0);
+
+                window.dispatchEvent(new CustomEvent('spark-data-update', {
+                    detail: {
+                        totalAppointments: aptData.length,
+                        pendingAppointments: aptData.filter(a => a.status === 'pending').length,
+                        totalInventoryItems: invSnap.size,
+                        netRevenue: totalIncome - totalExpense,
+                        totalIncome,
+                        totalExpense,
+                        recentAppointments: aptData.slice(0, 5).map(a => ({
+                            item: a.electricItem,
+                            issue: a.issue,
+                            status: a.status,
+                            date: a.date
+                        }))
+                    }
+                }));
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);
             } finally {
