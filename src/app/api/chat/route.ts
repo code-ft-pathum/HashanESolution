@@ -1,9 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { OpenRouter } from '@openrouter/sdk';
-
-const openrouter = new OpenRouter({
-    apiKey: process.env.OPENROUTER_API_KEY || '',
-});
 
 // Business context for the AI - public-facing info
 const PUBLIC_SYSTEM_PROMPT = `You are "Spark", the intelligent AI assistant for Hashan E Solution — a premier electrical repair and services company based in Sri Lanka.
@@ -71,6 +66,12 @@ You have full access to assist with:
 - Treat the admin as the business owner who needs comprehensive support
 `;
 
+interface ChatMessage {
+    role: string;
+    content: string;
+    reasoning_details?: string;
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { messages, isAdmin, contextData } = await req.json();
@@ -86,54 +87,48 @@ export async function POST(req: NextRequest) {
             systemPrompt += `\n\n## Current Business Data\nHere is the latest live data from the business dashboard:\n${JSON.stringify(contextData, null, 2)}`;
         }
 
-        const stream = await (openrouter.chat.send as any)({
-            model: 'arcee-ai/trinity-large-preview:free',
-            messages: [
-                { role: 'system', content: systemPrompt },
-                ...messages,
-            ],
-            stream: true,
-        });
+        const formattedMessages = [
+            { role: 'system', content: systemPrompt },
+            ...messages
+        ];
 
-        // Create a ReadableStream to stream the response
-        const encoder = new TextEncoder();
-        const readableStream = new ReadableStream({
-            async start(controller) {
-                try {
-                    for await (const chunk of stream as any) {
-                        const content = chunk.choices?.[0]?.delta?.content;
-                        if (content) {
-                            const data = JSON.stringify({ content });
-                            controller.enqueue(encoder.encode(`data: ${data}\n\n`));
-                        }
-                        // Send usage info (including reasoning tokens)
-                        if (chunk.usage) {
-                            const usageData = JSON.stringify({
-                                usage: chunk.usage,
-                                reasoningTokens: chunk.usage.reasoningTokens
-                            });
-                            controller.enqueue(encoder.encode(`data: ${usageData}\n\n`));
-                        }
-                    }
-                    controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-                    controller.close();
-                } catch (err) {
-                    controller.error(err);
-                }
-            },
-        });
-
-        return new Response(readableStream, {
+        // Call OpenRouter API directly
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
             headers: {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive',
+                "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                "Content-Type": "application/json"
             },
+            body: JSON.stringify({
+                "model": "arcee-ai/trinity-large-preview:free",
+                "messages": formattedMessages,
+                "reasoning": { "enabled": true }
+            })
         });
-    } catch (error) {
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error?.error?.message || 'OpenRouter API failed');
+        }
+
+        const result = await response.json();
+        const assistantMessage = result.choices?.[0]?.message;
+
+        if (!assistantMessage) {
+            throw new Error('No response from AI');
+        }
+
+        // Return the full message object including reasoning_details
+        return NextResponse.json({
+            content: assistantMessage.content,
+            reasoning_details: assistantMessage.reasoning_details || null,
+            role: assistantMessage.role
+        });
+
+    } catch (error: any) {
         console.error('Chat API error:', error);
         return NextResponse.json(
-            { error: 'Failed to process chat request' },
+            { error: error?.message || 'Failed to process chat request' },
             { status: 500 }
         );
     }

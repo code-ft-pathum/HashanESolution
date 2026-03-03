@@ -11,6 +11,7 @@ interface Message {
     id: string;
     role: 'user' | 'assistant';
     content: string;
+    reasoning_details?: string | null;
     timestamp: Date;
 }
 
@@ -114,7 +115,11 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
 
         const apiMessages = [...messages, userMessage]
             .filter(m => m.id !== 'welcome')
-            .map(m => ({ role: m.role, content: m.content }));
+            .map(m => ({
+                role: m.role,
+                content: m.content,
+                reasoning_details: m.reasoning_details
+            }));
 
         const assistantMsgId = (Date.now() + 1).toString();
         const assistantMsg: Message = {
@@ -135,43 +140,27 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
                 signal: abortControllerRef.current.signal,
             });
 
-            if (!res.ok) throw new Error('API request failed');
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData?.error || 'API request failed');
+            }
 
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
-
-            if (!reader) throw new Error('No response body');
-
+            const data = await res.json();
             setIsTyping(false);
-            let buffer = '';
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = line.slice(6).trim();
-                        if (data === '[DONE]') break;
-                        try {
-                            const parsed = JSON.parse(data);
-                            if (parsed.content) {
-                                setMessages(prev =>
-                                    prev.map(m =>
-                                        m.id === assistantMsgId
-                                            ? { ...m, content: m.content + parsed.content }
-                                            : m
-                                    )
-                                );
-                                if (isMinimized) setHasUnread(true);
+            if (data.content) {
+                setMessages(prev =>
+                    prev.map(m =>
+                        m.id === assistantMsgId
+                            ? {
+                                ...m,
+                                content: data.content,
+                                reasoning_details: data.reasoning_details || null
                             }
-                        } catch { }
-                    }
-                }
+                            : m
+                    )
+                );
+                if (isMinimized) setHasUnread(true);
             }
         } catch (error: any) {
             if (error?.name === 'AbortError') {
@@ -309,8 +298,8 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
             {isOpen && (
                 <div
                     className={`fixed z-[100] transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${isMinimized
-                            ? 'bottom-[104px] right-6 w-[280px] h-16 opacity-100'
-                            : 'bottom-0 right-0 w-full h-full md:bottom-6 md:right-6 md:w-[420px] md:h-[680px] md:max-h-[calc(100vh-120px)] opacity-100'
+                        ? 'bottom-[104px] right-6 w-[280px] h-16 opacity-100'
+                        : 'bottom-0 right-0 w-full h-full md:bottom-6 md:right-6 md:w-[420px] md:h-[680px] md:max-h-[calc(100vh-120px)] opacity-100'
                         }`}
                 >
                     <div
@@ -411,8 +400,8 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
                                             <div className={`max-w-[85%] flex flex-col gap-1.5 ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
                                                 <div
                                                     className={`px-4 py-3 rounded-2xl text-[14px] leading-relaxed shadow-lg ${message.role === 'user'
-                                                            ? 'rounded-tr-none text-white'
-                                                            : 'rounded-tl-none text-gray-200 border border-white/5'
+                                                        ? 'rounded-tr-none text-white'
+                                                        : 'rounded-tl-none text-gray-200 border border-white/5'
                                                         }`}
                                                     style={{
                                                         background: message.role === 'user'
