@@ -99,15 +99,15 @@ export async function POST(req: NextRequest) {
         const result = await openRouterRes.json();
         const reply = result?.choices?.[0]?.message;
 
-        if (!reply || !reply.content) {
+        if (!reply || (!reply.content && !reply.reasoning_details)) {
             console.error('Empty AI response:', JSON.stringify(result));
             return NextResponse.json({ error: 'No response from AI. Please try again.' }, { status: 502 });
         }
 
         return NextResponse.json({
-            content: reply.content,
+            content: typeof reply.content === 'string' ? reply.content : (reply.content ? JSON.stringify(reply.content) : ''),
             role: reply.role || 'assistant',
-            reasoning_details: reply.reasoning_details || null
+            reasoning_details: typeof reply.reasoning_details === 'string' ? reply.reasoning_details : (reply.reasoning_details ? JSON.stringify(reply.reasoning_details) : null)
         });
 
     } catch (error: any) {

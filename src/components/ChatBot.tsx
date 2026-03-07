@@ -276,8 +276,8 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
             {isOpen && (
                 <div
                     className={`fixed z-[100] transition-all duration-300 ${isMinimized
-                            ? 'bottom-[104px] right-6 w-72 h-16'
-                            : 'bottom-0 right-0 w-full h-full md:bottom-6 md:right-6 md:w-[420px] md:h-[680px] md:max-h-[calc(100vh-120px)]'
+                        ? 'bottom-[104px] right-6 w-72 h-16'
+                        : 'bottom-0 right-0 w-full h-full md:bottom-6 md:right-6 md:w-[420px] md:h-[680px] md:max-h-[calc(100vh-120px)]'
                         }`}
                 >
                     <div
@@ -376,8 +376,8 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
                                             <div className={`max-w-[82%] flex flex-col gap-1 ${message.role === 'user' ? 'items-end' : 'items-start'}`}>
                                                 <div
                                                     className={`px-4 py-3 rounded-2xl text-[13.5px] leading-relaxed ${message.role === 'user'
-                                                            ? 'rounded-tr-sm text-white'
-                                                            : 'rounded-tl-sm text-gray-200 border border-white/5'
+                                                        ? 'rounded-tr-sm text-white'
+                                                        : 'rounded-tl-sm text-gray-200 border border-white/5'
                                                         }`}
                                                     style={{
                                                         background: message.role === 'user'
@@ -400,7 +400,11 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
                                                 {message.reasoning_details && (
                                                     <details className="mt-1 text-xs text-gray-400 bg-gray-800/50 rounded-md p-2">
                                                         <summary className="cursor-pointer font-semibold mb-1 hover:text-gray-300">View Thinking Process</summary>
-                                                        <div className="mt-2 whitespace-pre-wrap">{message.reasoning_details}</div>
+                                                        <div className="mt-2 whitespace-pre-wrap">
+                                                            {typeof message.reasoning_details === 'string'
+                                                                ? message.reasoning_details
+                                                                : JSON.stringify(message.reasoning_details, null, 2)}
+                                                        </div>
                                                     </details>
                                                 )}
                                                 <span className="text-[10px] text-gray-600 px-1">

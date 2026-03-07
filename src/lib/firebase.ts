@@ -36,7 +36,7 @@ export const storage = getStorage(app);
 
 // Initialize Analytics conditionally (only in browser environments)
 export let analytics: any = null;
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey !== "dummy-key-for-build") {
     isSupported().then((supported) => {
         if (supported) {
             analytics = getAnalytics(app);
