@@ -8,7 +8,7 @@ interface Message {
     id: string;
     role: 'user' | 'assistant';
     content: string;
-    reasoning_details?: string | null;
+    reasoning_details?: any;
     timestamp: Date;
 }
 
@@ -401,9 +401,25 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
                                                     <details className="mt-1 text-xs text-gray-400 bg-gray-800/50 rounded-md p-2">
                                                         <summary className="cursor-pointer font-semibold mb-1 hover:text-gray-300">View Thinking Process</summary>
                                                         <div className="mt-2 whitespace-pre-wrap">
-                                                            {typeof message.reasoning_details === 'string'
-                                                                ? message.reasoning_details
-                                                                : JSON.stringify(message.reasoning_details, null, 2)}
+                                                            {(() => {
+                                                                try {
+                                                                    // Determine if it's already an array/object, or needs parsing
+                                                                    const parsed = typeof message.reasoning_details === 'string'
+                                                                        ? (message.reasoning_details.startsWith('[') ? JSON.parse(message.reasoning_details) : null)
+                                                                        : message.reasoning_details;
+
+                                                                    if (Array.isArray(parsed)) {
+                                                                        return parsed.map((item: any) => item.text || '').join('\n');
+                                                                    } else if (parsed && typeof parsed === 'object' && parsed.text) {
+                                                                        return parsed.text;
+                                                                    }
+                                                                    return typeof message.reasoning_details === 'string'
+                                                                        ? message.reasoning_details
+                                                                        : JSON.stringify(message.reasoning_details, null, 2);
+                                                                } catch (e) {
+                                                                    return String(message.reasoning_details);
+                                                                }
+                                                            })()}
                                                         </div>
                                                     </details>
                                                 )}

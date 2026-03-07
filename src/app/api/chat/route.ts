@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
             content: typeof reply.content === 'string' ? reply.content : (reply.content ? JSON.stringify(reply.content) : ''),
             role: reply.role || 'assistant',
-            reasoning_details: typeof reply.reasoning_details === 'string' ? reply.reasoning_details : (reply.reasoning_details ? JSON.stringify(reply.reasoning_details) : null)
+            reasoning_details: reply.reasoning_details || null
         });
 
     } catch (error: any) {
