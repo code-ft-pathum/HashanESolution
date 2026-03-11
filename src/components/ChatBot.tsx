@@ -18,8 +18,8 @@ interface ChatBotProps {
 }
 
 const WELCOME_MESSAGES: Record<string, string> = {
-    admin: `👋 Welcome back, Admin! I'm **Spark**, your Hashan E Solution business intelligence assistant.\n\nI can help you with:\n• 📊 Analyzing appointments & revenue trends\n• 📦 Inventory management insights\n• 💰 Financial analysis & business strategy\n• 📅 Scheduling optimization\n• 🎯 Customer behavior patterns\n\nWhat business insights can I help you with today?`,
-    user: `👋 Hello! I'm **Spark**, the AI assistant for **Hashan E Solution**.\n\nI'm here to help you with:\n• ⚡ Information about our repair services\n• 📅 Guidance on booking appointments\n• 🔧 Troubleshooting tips for your appliances\n• ❓ Any questions about our services\n\nHow can I assist you today?`,
+    admin: `👋 Welcome back, **Hashan**! I'm **Spark**, your business intelligence assistant.\n\nI'm ready to analyze your:\n• 📊 Recent repair appointments\n• 💰 Revenue & financial health\n• 📦 Inventory status\n• 📈 Shop performance trends\n\nWhich business insight would you like to explore?`,
+    user: `👋 Hello! I'm **Spark**, the AI expert for **Hashan E Solution**.\n\nI can assist you with:\n• 📺 **TV Repair** (LED/LCD/Smart TVs)\n• 🏍️ **Digital Meter Repair** (Bajaj Pulsar, Apache, etc.)\n• 🏠 **Home Appliances** (Microwaves, Fridges, Blenders)\n• 📅 **Booking Appointments** online\n\nHow can I help with your device today?`,
 };
 
 function parseMarkdown(text: string): string {
@@ -126,6 +126,7 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
             }));
 
         const assistantMsgId = (Date.now() + 1).toString();
+        // Add a placeholder message for the assistant that will be updated
         setMessages(prev => [...prev, {
             id: assistantMsgId,
             role: 'assistant',
@@ -139,20 +140,30 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: apiMessages, isAdmin, contextData: currentData }),
+                body: JSON.stringify({ 
+                    messages: apiMessages, 
+                    isAdmin, 
+                    contextData: currentData 
+                }),
                 signal: abortControllerRef.current.signal,
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data?.error || 'API request failed');
+                throw new Error(data?.error || 'AI service is currently unavailable');
             }
 
-            if (data.content) {
+            if (data.content !== undefined || data.reasoning_details) {
                 setMessages(prev =>
                     prev.map(m =>
-                        m.id === assistantMsgId ? { ...m, content: data.content, reasoning_details: data.reasoning_details || null } : m
+                        m.id === assistantMsgId 
+                            ? { 
+                                ...m, 
+                                content: data.content || '', 
+                                reasoning_details: data.reasoning_details || null 
+                            } 
+                            : m
                     )
                 );
                 if (isMinimized) setHasUnread(true);

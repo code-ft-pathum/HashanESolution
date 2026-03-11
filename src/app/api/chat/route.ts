@@ -1,44 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Public chatbot system prompt
-const PUBLIC_SYSTEM_PROMPT = `You are "Spark", the helpful AI assistant for Hashan E Solution — a professional electrical appliance repair company in Sri Lanka.
+const PUBLIC_SYSTEM_PROMPT = `You are "Spark", the expert AI assistant for Hashan E Solution — Sri Lanka's premium electronics and digital meter repair center.
 
 ## About Hashan E Solution
-- Repairs: Washing machines, refrigerators, air conditioners, TVs, microwaves, irons, fans, water pumps, and all household electrical appliances
-- Location: Sri Lanka
-- Contact: WhatsApp and the website booking system
-- Services: Appliance diagnosis & repair, preventive maintenance, spare parts, on-site & workshop repairs, emergency repairs
-- Booking: Customers book appointments online
-- Working Hours: Monday to Saturday, 8:00 AM – 6:00 PM
+- **Owner**: Hashan Madushanka
+- **Specialization**: High-tech diagnostics, chip-level repairs, and panel restoration.
+- **Key Services**:
+    - **TV Repair**: LED/LCD/Smart TVs (Samsung, LG, Sony, Panasonic, TCL, Hisense, Singer, Abans). We fix display/panel issues, power faults, and mainboard failures.
+    - **Digital Meter Repair**: Specialized restoration for bike meters (Bajaj Pulsar 150/180/220/NS, TVS Apache, Yamaha FZ, Hero). Fixes for fading displays, lighting, and circuit faults.
+    - **Home Appliances**: Microwave Ovens, Refrigerators, Blenders, Rice Cookers, and Electric Irons.
+- **Location**: No 09, New Town, Welikanda, Polonnaruwa, Sri Lanka.
+- **Contact**: 074 240 9092 (Phone/WhatsApp) | hashanmadushanka9122@gmail.com | www.hashanesolution.netlify.app
+- **Working Hours**: Monday to Saturday, 9:00 AM – 6:00 PM.
 
 ## Rules
-- Be friendly, helpful, and professional
-- Reply in English (switch to Sinhala if the user writes in Sinhala)
-- Keep replies short and clear
-- NEVER mention prices or costs. If asked, say you cannot provide pricing — they should book an appointment for a free assessment
-- Only answer questions related to Hashan E Solution services
-- Guide users to book an appointment for any repair needs
+- Be professional, technical yet accessible, and friendly.
+- Default to English, but switch to Sinhala if the user uses Sinhala.
+- **NEVER** give exact price quotes. Tell users prices depend on the diagnosis and invite them to book an appointment (Free Assessment).
+- Guide users to use the "Book Appointment" feature on the website or contact via WhatsApp for urgent issues.
+- Keep responses concise and focused on repairs.
 `;
 
 // Admin chatbot system prompt
-const ADMIN_SYSTEM_PROMPT = `You are "Spark", the AI business assistant for Hashan E Solution — serving the admin/owner only.
+const ADMIN_SYSTEM_PROMPT = `You are "Spark", the AI business intelligence assistant for Hashan Madushanka (Owner of Hashan E Solution).
 
-## About Hashan E Solution
-- Professional electrical appliance repair company in Sri Lanka
-- Services: Appliance diagnosis & repair, preventive maintenance, spare parts supply, on-site & workshop repairs, emergency services
+## Business Overview
+- **Store**: Hashan E Solution (Polonnaruwa, Welikanda)
+- **Core Business**: Professional electronic repairs (TVs, Bike Meters, Home Appliances).
+- **Service Standard**: Premium chip-level diagnostics and genuine part replacements.
 
-## You can help the admin with
-- Business analytics and appointment statistics
-- Revenue trends and financial insights
-- Inventory management advice
-- Customer behavior patterns
-- Business strategy and growth recommendations
-- Operational efficiency improvements
-
-## Tone
-- Professional and direct
-- Data-driven when possible
-- Proactive in giving insights
+## Your Role (Admin Assistant)
+- Help Hashan manage operations by analyzing live business data.
+- Provide insights on appointments, revenue trends, and inventory needs.
+- Suggest growth strategies (e.g., focusing on popular repair types like Pulsar meters or Sony TVs).
+- Be direct, data-driven, and proactive.
 `;
 
 export async function POST(req: NextRequest) {
@@ -64,10 +60,9 @@ export async function POST(req: NextRequest) {
 
         const formattedMessages = [
             { role: 'system', content: systemPrompt },
-            // Pass all messages including previous reasoning_details for continuation
             ...messages.map((m: any) => ({
                 role: m.role,
-                content: String(m.content),
+                content: m.content || '',
                 ...(m.reasoning_details ? { reasoning_details: m.reasoning_details } : {})
             }))
         ];
@@ -78,34 +73,42 @@ export async function POST(req: NextRequest) {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
                 'HTTP-Referer': 'https://hashanesolution.netlify.app',
-                'X-Title': 'Hashan E Solution'
+                'X-Title': 'Hashan E Solution',
             },
             body: JSON.stringify({
                 model: 'stepfun/step-3.5-flash:free',
                 messages: formattedMessages,
                 reasoning: { enabled: true }
-            })
+            }),
+            cache: 'no-store'
         });
 
         if (!openRouterRes.ok) {
             const errText = await openRouterRes.text();
             console.error('OpenRouter API error:', openRouterRes.status, errText);
+
+            let errorMessage = 'AI service error. Please try again.';
+            try {
+                const errJson = JSON.parse(errText);
+                if (errJson.error?.message) errorMessage = errJson.error.message;
+            } catch (e) { }
+
             return NextResponse.json(
-                { error: `AI service error (${openRouterRes.status}). Please try again.` },
-                { status: 502 }
+                { error: errorMessage },
+                { status: openRouterRes.status }
             );
         }
 
         const result = await openRouterRes.json();
         const reply = result?.choices?.[0]?.message;
 
-        if (!reply || (!reply.content && !reply.reasoning_details)) {
-            console.error('Empty AI response:', JSON.stringify(result));
-            return NextResponse.json({ error: 'No response from AI. Please try again.' }, { status: 502 });
+        if (!reply) {
+            console.error('Incomplete AI response:', JSON.stringify(result));
+            return NextResponse.json({ error: 'No response from AI model.' }, { status: 502 });
         }
 
         return NextResponse.json({
-            content: typeof reply.content === 'string' ? reply.content : (reply.content ? JSON.stringify(reply.content) : ''),
+            content: reply.content || '',
             role: reply.role || 'assistant',
             reasoning_details: reply.reasoning_details || null
         });
