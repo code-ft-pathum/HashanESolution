@@ -117,7 +117,13 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
         }
 
         const apiMessages = newMessages
-            .filter(m => m.id !== 'welcome')
+            .filter(m => 
+                m.id !== 'welcome' && 
+                m.content !== '' && 
+                !m.content.includes('Sorry, I encountered an error') &&
+                !m.content.includes('Authentication failed') &&
+                !m.content.includes('AI service error')
+            )
             .map(m => ({
                 role: m.role,
                 content: m.content,
@@ -172,10 +178,11 @@ export default function ChatBot({ isAdmin = false, contextData = null }: ChatBot
             if (error?.name === 'AbortError') {
                 setMessages(prev => prev.filter(m => m.id !== assistantMsgId));
             } else {
+                const errorMessage = error?.message || 'Sorry, I encountered an error. Please try again.';
                 setMessages(prev =>
                     prev.map(m =>
                         m.id === assistantMsgId
-                            ? { ...m, content: 'Sorry, I encountered an error. Please try again.' }
+                            ? { ...m, content: errorMessage }
                             : m
                     )
                 );
