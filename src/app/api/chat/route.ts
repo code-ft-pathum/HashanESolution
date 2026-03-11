@@ -39,27 +39,25 @@ const ADMIN_SYSTEM_PROMPT = `You are "Spark", the AI business intelligence assis
 
 export async function POST(req: NextRequest) {
     try {
-        // Robustly handle incoming request body
-        let body;
-        try {
-            const text = await req.text();
-            if (!text) return NextResponse.json({ error: 'Body is empty' }, { status: 400 });
-            body = JSON.parse(text);
-        } catch (e) {
-            return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
-        }
-
+        const body = await req.json().catch(() => ({}));
         const { messages, isAdmin, contextData } = body;
+
+        console.log(`[Chat API] Request: isAdmin=${isAdmin}, messages=${messages?.length}`);
+
         if (!messages || !Array.isArray(messages)) {
             return NextResponse.json({ error: 'Messages are required' }, { status: 400 });
         }
 
+        // Check API Key
         const apiKey = (process.env.OPENROUTER_API_KEY || '').trim();
         if (!apiKey) {
+            console.error('[Chat API] Critical Error: OPENROUTER_API_KEY is not defined in environment variables.');
             return NextResponse.json({ 
-                error: 'API key is missing. Ensure OPENROUTER_API_KEY is set in Netlify Environment Variables.' 
+                error: 'AI service setup is incomplete. The site owner must add OPENROUTER_API_KEY to Netlify environment variables.' 
             }, { status: 500 });
         }
+
+        console.log('[Chat API] Using API Key (length):', apiKey.length);
 
         let systemPrompt = isAdmin ? ADMIN_SYSTEM_PROMPT : PUBLIC_SYSTEM_PROMPT;
         if (isAdmin && contextData) {
@@ -75,7 +73,7 @@ export async function POST(req: NextRequest) {
             }))
         ];
 
-        // API Call
+        // API Call to OpenRouter
         const openRouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -94,21 +92,13 @@ export async function POST(req: NextRequest) {
 
         if (!openRouterResponse.ok) {
             const status = openRouterResponse.status;
-            let errorText = '';
-            try {
-                errorText = await openRouterResponse.text();
-            } catch (e) {}
-
-            console.error(`OpenRouter Error ${status}:`, errorText);
+            const errorText = await openRouterResponse.text().catch(() => 'No error body');
+            console.error(`[Chat API] OpenRouter Failed (${status}):`, errorText);
 
             if (status === 401) {
                 return NextResponse.json({ 
-                    error: `Authentication failed (401). Your API key might be invalid or copied incorrectly.` 
+                    error: `401 Unauthorized: Your API Key is being rejected by OpenRouter. Please check your Netlify environment variables and ensure the key is copied correctly with no extra spaces.` 
                 }, { status: 401 });
-            }
-
-            if (status === 402) {
-                return NextResponse.json({ error: 'Insufficient credits on OpenRouter.' }, { status: 402 });
             }
 
             return NextResponse.json({ error: `AI service error (${status}).` }, { status });
@@ -118,7 +108,8 @@ export async function POST(req: NextRequest) {
         const reply = result?.choices?.[0]?.message;
 
         if (!reply) {
-            return NextResponse.json({ error: 'No response from AI model.' }, { status: 502 });
+            console.error('[Chat API] Empty response from OpenRouter:', JSON.stringify(result));
+            return NextResponse.json({ error: 'The AI model returned an empty response.' }, { status: 502 });
         }
 
         return NextResponse.json({
@@ -128,9 +119,9 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (error: any) {
-        console.error('Chat API Error:', error);
+        console.error('[Chat API] Internal Error:', error);
         return NextResponse.json(
-            { error: error?.message || 'Server error' },
+            { error: `Internal Server Error: ${error?.message || 'Check terminal logs'}` },
             { status: 500 }
         );
     }
