@@ -39,17 +39,31 @@ const ADMIN_SYSTEM_PROMPT = `You are "Spark", the AI business intelligence assis
 
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json();
+        // Robstly handle incoming request body
+        let body;
+        try {
+            const text = await req.text();
+            if (!text) {
+                return NextResponse.json({ error: 'Request body is empty' }, { status: 400 });
+            }
+            body = JSON.parse(text);
+        } catch (e) {
+            console.error('Failed to parse request JSON:', e);
+            return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+        }
+
         const { messages, isAdmin, contextData } = body;
 
         if (!messages || !Array.isArray(messages)) {
             return NextResponse.json({ error: 'Invalid messages format' }, { status: 400 });
         }
 
-        const apiKey = process.env.OPENROUTER_API_KEY;
+        const apiKey = (process.env.OPENROUTER_API_KEY || '').trim();
         if (!apiKey) {
-            console.error('OPENROUTER_API_KEY is not set');
-            return NextResponse.json({ error: 'Server configuration error: API key missing' }, { status: 500 });
+            console.error('OPENROUTER_API_KEY is not set or empty');
+            return NextResponse.json({ 
+                error: 'AI configuration error: API key missing. Please set OPENROUTER_API_KEY in environment variables.' 
+            }, { status: 500 });
         }
 
         let systemPrompt = isAdmin ? ADMIN_SYSTEM_PROMPT : PUBLIC_SYSTEM_PROMPT;
@@ -62,61 +76,74 @@ export async function POST(req: NextRequest) {
             { role: 'system', content: systemPrompt },
             ...messages.map((m: any) => ({
                 role: m.role,
-                content: m.content || '',
+                content: typeof m.content === 'string' ? m.content : (m.content ? JSON.stringify(m.content) : ''),
                 ...(m.reasoning_details ? { reasoning_details: m.reasoning_details } : {})
             }))
         ];
 
-        const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://hashanesolution.netlify.app',
-                'X-Title': 'Hashan E Solution',
-            },
-            body: JSON.stringify({
-                model: 'stepfun/step-3.5-flash:free',
-                messages: formattedMessages,
-                reasoning: { enabled: true }
-            }),
-            cache: 'no-store'
-        });
+        // Set a timeout for the fetch request
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s timeout for long reasoning
 
-        if (!openRouterRes.ok) {
-            const errText = await openRouterRes.text();
-            console.error('OpenRouter API error:', openRouterRes.status, errText);
+        try {
+            const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://hashanesolution.netlify.app',
+                    'X-Title': 'Hashan E Solution',
+                },
+                body: JSON.stringify({
+                    model: 'stepfun/step-3.5-flash:free',
+                    messages: formattedMessages,
+                    reasoning: { enabled: true }
+                }),
+                cache: 'no-store',
+                signal: controller.signal
+            });
 
-            let errorMessage = 'AI service error. Please try again.';
-            try {
-                const errJson = JSON.parse(errText);
-                if (errJson.error?.message) errorMessage = errJson.error.message;
-            } catch (e) { }
+            clearTimeout(timeoutId);
 
-            return NextResponse.json(
-                { error: errorMessage },
-                { status: openRouterRes.status }
-            );
+            if (!openRouterRes.ok) {
+                const errText = await openRouterRes.text();
+                console.error(`OpenRouter API error (${openRouterRes.status}):`, errText);
+                
+                let errorMessage = `AI service error (${openRouterRes.status}). Please try again.`;
+                try {
+                    const errJson = JSON.parse(errText);
+                    if (errJson.error?.message) errorMessage = errJson.error.message;
+                } catch (e) {}
+
+                return NextResponse.json({ error: errorMessage }, { status: openRouterRes.status });
+            }
+
+            const result = await openRouterRes.json();
+            const reply = result?.choices?.[0]?.message;
+
+            if (!reply) {
+                console.error('Incomplete AI response body:', JSON.stringify(result));
+                return NextResponse.json({ error: 'The AI model returned an incomplete response.' }, { status: 502 });
+            }
+
+            return NextResponse.json({
+                content: reply.content || '',
+                role: reply.role || 'assistant',
+                reasoning_details: reply.reasoning_details || null
+            });
+
+        } catch (fetchError: any) {
+            clearTimeout(timeoutId);
+            if (fetchError.name === 'AbortError') {
+                return NextResponse.json({ error: 'Request timed out. The AI model is taking too long to think.' }, { status: 504 });
+            }
+            throw fetchError; // Re-throw to be caught by outer block
         }
-
-        const result = await openRouterRes.json();
-        const reply = result?.choices?.[0]?.message;
-
-        if (!reply) {
-            console.error('Incomplete AI response:', JSON.stringify(result));
-            return NextResponse.json({ error: 'No response from AI model.' }, { status: 502 });
-        }
-
-        return NextResponse.json({
-            content: reply.content || '',
-            role: reply.role || 'assistant',
-            reasoning_details: reply.reasoning_details || null
-        });
 
     } catch (error: any) {
-        console.error('Chat route error:', error?.message || error);
+        console.error('Chat API Route Error:', error);
         return NextResponse.json(
-            { error: 'Something went wrong. Please try again.' },
+            { error: error?.message || 'A server-side error occurred while processing your request.' },
             { status: 500 }
         );
     }
