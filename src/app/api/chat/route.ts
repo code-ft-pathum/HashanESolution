@@ -39,35 +39,29 @@ const ADMIN_SYSTEM_PROMPT = `You are "Spark", the AI business intelligence assis
 
 export async function POST(req: NextRequest) {
     try {
-        // Robstly handle incoming request body
+        // Robustly handle incoming request body
         let body;
         try {
             const text = await req.text();
-            if (!text) {
-                return NextResponse.json({ error: 'Request body is empty' }, { status: 400 });
-            }
+            if (!text) return NextResponse.json({ error: 'Body is empty' }, { status: 400 });
             body = JSON.parse(text);
         } catch (e) {
-            console.error('Failed to parse request JSON:', e);
-            return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
         }
 
         const { messages, isAdmin, contextData } = body;
-
         if (!messages || !Array.isArray(messages)) {
-            return NextResponse.json({ error: 'Invalid messages format' }, { status: 400 });
+            return NextResponse.json({ error: 'Messages are required' }, { status: 400 });
         }
 
         const apiKey = (process.env.OPENROUTER_API_KEY || '').trim();
         if (!apiKey) {
-            console.error('OPENROUTER_API_KEY is not set or empty');
             return NextResponse.json({ 
-                error: 'AI configuration error: API key missing. Please set OPENROUTER_API_KEY in environment variables.' 
+                error: 'API key is missing. Ensure OPENROUTER_API_KEY is set in Netlify Environment Variables.' 
             }, { status: 500 });
         }
 
         let systemPrompt = isAdmin ? ADMIN_SYSTEM_PROMPT : PUBLIC_SYSTEM_PROMPT;
-
         if (isAdmin && contextData) {
             systemPrompt += `\n\n## Live Business Data\n${JSON.stringify(contextData, null, 2)}`;
         }
@@ -76,74 +70,67 @@ export async function POST(req: NextRequest) {
             { role: 'system', content: systemPrompt },
             ...messages.map((m: any) => ({
                 role: m.role,
-                content: typeof m.content === 'string' ? m.content : (m.content ? JSON.stringify(m.content) : ''),
+                content: String(m.content || ''),
                 ...(m.reasoning_details ? { reasoning_details: m.reasoning_details } : {})
             }))
         ];
 
-        // Set a timeout for the fetch request
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s timeout for long reasoning
+        // API Call
+        const openRouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`,
+                'HTTP-Referer': 'https://hashanesolution.netlify.app',
+                'X-Title': 'Hashan E Solution',
+            },
+            body: JSON.stringify({
+                model: 'stepfun/step-3.5-flash:free',
+                messages: formattedMessages,
+                reasoning: { enabled: true }
+            }),
+            cache: 'no-store'
+        });
 
-        try {
-            const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://hashanesolution.netlify.app',
-                    'X-Title': 'Hashan E Solution',
-                },
-                body: JSON.stringify({
-                    model: 'stepfun/step-3.5-flash:free',
-                    messages: formattedMessages,
-                    reasoning: { enabled: true }
-                }),
-                cache: 'no-store',
-                signal: controller.signal
-            });
+        if (!openRouterResponse.ok) {
+            const status = openRouterResponse.status;
+            let errorText = '';
+            try {
+                errorText = await openRouterResponse.text();
+            } catch (e) {}
 
-            clearTimeout(timeoutId);
+            console.error(`OpenRouter Error ${status}:`, errorText);
 
-            if (!openRouterRes.ok) {
-                const errText = await openRouterRes.text();
-                console.error(`OpenRouter API error (${openRouterRes.status}):`, errText);
-                
-                let errorMessage = `AI service error (${openRouterRes.status}). Please try again.`;
-                try {
-                    const errJson = JSON.parse(errText);
-                    if (errJson.error?.message) errorMessage = errJson.error.message;
-                } catch (e) {}
-
-                return NextResponse.json({ error: errorMessage }, { status: openRouterRes.status });
+            if (status === 401) {
+                return NextResponse.json({ 
+                    error: `Authentication failed (401). Your API key might be invalid or copied incorrectly.` 
+                }, { status: 401 });
             }
 
-            const result = await openRouterRes.json();
-            const reply = result?.choices?.[0]?.message;
-
-            if (!reply) {
-                console.error('Incomplete AI response body:', JSON.stringify(result));
-                return NextResponse.json({ error: 'The AI model returned an incomplete response.' }, { status: 502 });
+            if (status === 402) {
+                return NextResponse.json({ error: 'Insufficient credits on OpenRouter.' }, { status: 402 });
             }
 
-            return NextResponse.json({
-                content: reply.content || '',
-                role: reply.role || 'assistant',
-                reasoning_details: reply.reasoning_details || null
-            });
-
-        } catch (fetchError: any) {
-            clearTimeout(timeoutId);
-            if (fetchError.name === 'AbortError') {
-                return NextResponse.json({ error: 'Request timed out. The AI model is taking too long to think.' }, { status: 504 });
-            }
-            throw fetchError; // Re-throw to be caught by outer block
+            return NextResponse.json({ error: `AI service error (${status}).` }, { status });
         }
 
+        const result = await openRouterResponse.json();
+        const reply = result?.choices?.[0]?.message;
+
+        if (!reply) {
+            return NextResponse.json({ error: 'No response from AI model.' }, { status: 502 });
+        }
+
+        return NextResponse.json({
+            content: reply.content || '',
+            role: reply.role || 'assistant',
+            reasoning_details: reply.reasoning_details || null
+        });
+
     } catch (error: any) {
-        console.error('Chat API Route Error:', error);
+        console.error('Chat API Error:', error);
         return NextResponse.json(
-            { error: error?.message || 'A server-side error occurred while processing your request.' },
+            { error: error?.message || 'Server error' },
             { status: 500 }
         );
     }
